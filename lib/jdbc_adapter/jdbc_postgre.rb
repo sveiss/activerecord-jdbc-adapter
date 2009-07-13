@@ -228,16 +228,19 @@ module ::JdbcSpec
 
       # Otherwise, insert then grab last_insert_id.
       execute(sql, name)
+      unless id_value.nil?
+        id_value
+      else
+        # If neither pk nor sequence name is given, look them up.
+        unless pk || sequence_name
+          pk, sequence_name = *pk_and_sequence_for(table)
+        end
 
-      # If neither pk nor sequence name is given, look them up.
-      unless pk || sequence_name
-        pk, sequence_name = *pk_and_sequence_for(table)
-      end
-
-      # If a pk is given, fallback to default sequence name.
-      # Don't fetch last insert id for a table without a pk.
-      if pk && sequence_name ||= default_sequence_name(table, pk)
-        last_insert_id(table, sequence_name)
+        # If a pk is given, fallback to default sequence name.
+        # Don't fetch last insert id for a table without a pk.
+        if pk && sequence_name ||= default_sequence_name(table, pk)
+          last_insert_id(table, sequence_name)
+        end
       end
     end
 
