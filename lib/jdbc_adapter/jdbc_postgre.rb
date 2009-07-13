@@ -251,7 +251,7 @@ module ::JdbcSpec
         table_name = parts.pop
         schema_name = parts.join(".")
       end
-      @connection.columns_internal(table_name, name, schema_name)
+      @connection.columns_internal(table_name.to_s, name, schema_name)
     end
 
     # From postgresql_adapter.rb
